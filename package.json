@@ -1,0 +1,19 @@
+{
+  "name": "rincon_del_conocimiento_front",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@preact/preset-vite": "^2.10.1",
+    "preact": "^10.26.8",
+    "vite": "^6.3.5"
+  }
+}
