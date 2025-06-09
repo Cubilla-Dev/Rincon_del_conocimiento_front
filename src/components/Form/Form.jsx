@@ -1,12 +1,20 @@
 import { useState } from 'preact/hooks';
 import {MultiImageUploader} from '../util/MultiImageUploader'
 import {MultiLineInput} from '../util/MultiLineInput'
+import config from '../../config/config.env'
+
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+const CREATE_GUIDE_ENDPOINT = import.meta.env.VITE_CREACION_GUIA;
 
 export default function Form({ onSubmit }) {
   const [steps, setSteps] = useState([{ content: "", order: 1 }]);
   const [equipment, setEquipment] = useState([{name: ""}]);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Usando las variables de entorno directamente
+  const url = `${API_BASE_URL}${CREATE_GUIDE_ENDPOINT}`;
+  
+  console.log('la url es ', url)
 
   // Función para manejar el envío al backend
   const handleSubmit = async (e) => {
@@ -16,17 +24,23 @@ export default function Form({ onSubmit }) {
     try {
       // Crear FormData para enviar tanto la imagen como los pasos
       const formData = new FormData();
+
+      // Agregar múltiples imágenes
+      selectedFiles.forEach((file) => {
+        formData.append('images', file); // Mejor usar el mismo nombre para todos
+      });
+
+     // Agregar otros datos
+      formData.append('steps', JSON.stringify(
+        steps.filter(step => step.content.trim() !== '')
+      ));
       
-      // Agregar la imagen si existe
-      if (selectedFiles) {
-        formData.append('image', selectedFiles);
-      }
-      
-      // Agregar los pasos como JSON
-      formData.append('steps', JSON.stringify(steps.filter(step => step.content.trim() !== '')));
+      formData.append('equipment', JSON.stringify(
+        equipment.filter(item => item.name.trim() !== '')
+      ));
 
       // Enviar al backend (ejemplo con fetch)
-      const response = await fetch('tu_endpoint_api', {
+      const response = await fetch(url, {
         method: 'POST',
         body: formData,
         // No necesitas headers para 'Content-Type' con FormData,
@@ -38,6 +52,7 @@ export default function Form({ onSubmit }) {
       }
 
       const result = await response.json();
+      onSubmit(result);
       console.log('Éxito:', result);
       // Aquí puedes manejar la respuesta exitosa (redirección, mensaje, etc.)
     } catch (error) {
