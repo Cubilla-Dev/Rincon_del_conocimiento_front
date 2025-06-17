@@ -1,0 +1,25 @@
+.containerImagen {
+  display: flex;
+  flex-direction: column;
+}
+
+.textImagen {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.viewImagen {
+  display: grid;
+  grid-template-columns: repeat(3, 100px); /* 3 columnas de 100px */
+  grid-auto-rows: auto;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: center; /* alineación opcional */
+}
+
+.button {
+  background-color: #2be463;
+  border-color: #41c958;
+  border-radius: 10%;
+  width: 150px;
+}

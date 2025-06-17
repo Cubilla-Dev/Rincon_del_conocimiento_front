@@ -1,0 +1,25 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:preact/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["@typescript-eslint", "preact", "prettier"],
+  "rules": {
+    // Desactiva reglas conflictivas con Preact
+    "react/no-unknown-property": "off",
+    "react/react-in-jsx-scope": "off"
+  },
+  "settings": {
+    "react": {
+      "pragma": "h",
+      "version": "detect"
+    },
+    "preact": {
+      "version": "detect"
+    }
+  }
+}
