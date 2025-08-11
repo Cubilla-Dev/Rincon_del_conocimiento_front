@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import {MultiImageUploader} from '../util/MultiImageUploader'
 import {MultiLineInput} from '../util/MultiLineInput'
-import config from '../../config/config.env'
+import config from '../../config/config.env';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 const CREATE_GUIDE_ENDPOINT = import.meta.env.VITE_CREACION_GUIA;
@@ -11,10 +11,11 @@ export default function Form({ onSubmit }) {
   const [equipment, setEquipment] = useState([{name: ""}]);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [title, setTitle] = useState("")
   // Usando las variables de entorno directamente
   const url = `${API_BASE_URL}${CREATE_GUIDE_ENDPOINT}`;
   
-  console.log('la url es ', url)
+  console.log('la url es ', config.api.url)
 
   // Función para manejar el envío al backend
   const handleSubmit = async (e) => {
@@ -30,12 +31,15 @@ export default function Form({ onSubmit }) {
         formData.append('images', file); // Mejor usar el mismo nombre para todos
       });
 
+      //Agrega titulo
+      formData.append('title', title);
+
      // Agregar otros datos
       formData.append('steps', JSON.stringify(
         steps.filter(step => step.content.trim() !== '')
       ));
       
-      formData.append('equipment', JSON.stringify(
+      formData.append('equipments', JSON.stringify(
         equipment.filter(item => item.name.trim() !== '')
       ));
 
@@ -65,12 +69,14 @@ export default function Form({ onSubmit }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h3>Subir imagen:</h3>
-      <MultiImageUploader 
-        selectedFiles={selectedFiles} 
-        setSelectedFiles={setSelectedFiles} 
-      />
-      
+      <h3>Titulo</h3>
+      <input 
+        type='text' 
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder='Titulo'
+        required />
+    
       <h3>Pasos a seguir:</h3>
       <MultiLineInput 
         items={steps}
@@ -88,6 +94,13 @@ export default function Form({ onSubmit }) {
         addButtonText="Añadir herramienta"
         fieldName="name"
       />
+
+      <h3>Subir imagen:</h3>
+      <MultiImageUploader 
+        selectedFiles={selectedFiles} 
+        setSelectedFiles={setSelectedFiles} 
+      />
+
       <button 
         type="submit" 
         disabled={isSubmitting}

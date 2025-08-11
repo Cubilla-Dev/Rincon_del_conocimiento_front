@@ -1,5 +1,3 @@
-import 'dotenv/config'; 
-
 // config/config.env.js
 export default {
     api: {
