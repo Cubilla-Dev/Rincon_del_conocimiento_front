@@ -1,21 +1,21 @@
 import { useState } from 'preact/hooks';
-import {MultiImageUploader} from '../util/MultiImageUploader'
-import {MultiLineInput} from '../util/MultiLineInput'
+import { MultiImageUploader } from '../util/MultiImageUploader';
+import { MultiLineInput } from '../util/MultiLineInput';
 import config from '../../config/config.env';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 const CREATE_GUIDE_ENDPOINT = import.meta.env.VITE_CREACION_GUIA;
 
 export default function Form({ onSubmit }) {
-  const [steps, setSteps] = useState([{ content: "", order: 1 }]);
-  const [equipment, setEquipment] = useState([{name: ""}]);
+  const [steps, setSteps] = useState([{ content: '', order: 1 }]);
+  const [equipment, setEquipment] = useState([{ name: '' }]);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [title, setTitle] = useState("")
+  const [title, setTitle] = useState('');
   // Usando las variables de entorno directamente
   const url = `${API_BASE_URL}${CREATE_GUIDE_ENDPOINT}`;
-  
-  console.log('la url es ', config.api.url)
+
+  console.log('la url es ', config.api.url);
 
   // Función para manejar el envío al backend
   const handleSubmit = async (e) => {
@@ -34,14 +34,13 @@ export default function Form({ onSubmit }) {
       //Agrega titulo
       formData.append('title', title);
 
-     // Agregar otros datos
-      formData.append('steps', JSON.stringify(
-        steps.filter(step => step.content.trim() !== '')
-      ));
-      
-      formData.append('equipments', JSON.stringify(
-        equipment.filter(item => item.name.trim() !== '')
-      ));
+      // Agregar otros datos
+      formData.append('steps', JSON.stringify(steps.filter((step) => step.content.trim() !== '')));
+
+      formData.append(
+        'equipments',
+        JSON.stringify(equipment.filter((item) => item.name.trim() !== ''))
+      );
 
       // Enviar al backend (ejemplo con fetch)
       const response = await fetch(url, {
@@ -70,15 +69,16 @@ export default function Form({ onSubmit }) {
   return (
     <form onSubmit={handleSubmit}>
       <h3>Titulo</h3>
-      <input 
-        type='text' 
+      <input
+        type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder='Titulo'
-        required />
-    
+        placeholder="Titulo"
+        required
+      />
+
       <h3>Pasos a seguir:</h3>
-      <MultiLineInput 
+      <MultiLineInput
         items={steps}
         setItems={setSteps}
         placeholderTemplate="Agrega el {order} paso"
@@ -87,7 +87,7 @@ export default function Form({ onSubmit }) {
       />
 
       <h3>Herramientas a usar:</h3>
-      <MultiLineInput 
+      <MultiLineInput
         items={equipment}
         setItems={setEquipment}
         placeholderTemplate="Agrega herramienta {order}"
@@ -96,16 +96,9 @@ export default function Form({ onSubmit }) {
       />
 
       <h3>Subir imagen:</h3>
-      <MultiImageUploader 
-        selectedFiles={selectedFiles} 
-        setSelectedFiles={setSelectedFiles} 
-      />
+      <MultiImageUploader selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} />
 
-      <button 
-        type="submit" 
-        disabled={isSubmitting}
-        style={{ marginTop: '20px' }}
-      >
+      <button type="submit" disabled={isSubmitting} style={{ marginTop: '20px' }}>
         {isSubmitting ? 'Enviando...' : 'Enviar datos'}
       </button>
     </form>

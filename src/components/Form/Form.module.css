@@ -1,0 +1,26 @@
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* .imagenContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+} */
+
+.button {
+  background-color: #2be463;
+  border-color: #41c958;
+  border-radius: 10%;
+  width: 150px;
+}
+
+.input {
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}

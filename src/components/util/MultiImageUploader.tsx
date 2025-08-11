@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import styleImagen from '../../styles/multiImagen.module.css';
 
 export function MultiImageUploader({ selectedFiles, setSelectedFiles }) {
   const [previewUrls, setPreviewUrls] = useState([]);
@@ -7,7 +8,7 @@ export function MultiImageUploader({ selectedFiles, setSelectedFiles }) {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    
+
     // Validar cantidad de imágenes
     const totalFiles = selectedFiles.length + files.length;
     if (totalFiles > MAX_IMAGES) {
@@ -16,7 +17,7 @@ export function MultiImageUploader({ selectedFiles, setSelectedFiles }) {
     }
 
     // Validar que sean imágenes
-    const invalidFiles = files.filter(file => !file.type.match('image.*'));
+    const invalidFiles = files.filter((file) => !file.type.match('image.*'));
     if (invalidFiles.length > 0) {
       alert('Por favor, selecciona solo archivos de imagen');
       return;
@@ -28,7 +29,7 @@ export function MultiImageUploader({ selectedFiles, setSelectedFiles }) {
 
     // Generar previsualizaciones para los nuevos archivos
     const newPreviews = [];
-    files.forEach(file => {
+    files.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         newPreviews.push(reader.result);
@@ -43,16 +44,16 @@ export function MultiImageUploader({ selectedFiles, setSelectedFiles }) {
   const removeImage = (index) => {
     const newFiles = [...selectedFiles];
     const newPreviews = [...previewUrls];
-    
+
     newFiles.splice(index, 1);
     newPreviews.splice(index, 1);
-    
+
     setSelectedFiles(newFiles);
     setPreviewUrls(newPreviews);
   };
 
   return (
-    <div>
+    <div className={styleImagen.containerImagen}>
       <input
         type="file"
         accept="image/*"
@@ -62,25 +63,24 @@ export function MultiImageUploader({ selectedFiles, setSelectedFiles }) {
         style={{ display: 'block', margin: '10px 0' }}
       />
       <p>
-        {selectedFiles.length}/{MAX_IMAGES} imágenes seleccionadas. 
-        {selectedFiles.length < MIN_IMAGES && 
-          ` Mínimo requerido: ${MIN_IMAGES}`}
+        {selectedFiles.length}/{MAX_IMAGES} imágenes seleccionadas.
+        {selectedFiles.length < MIN_IMAGES && ` Mínimo requerido: ${MIN_IMAGES}`}
       </p>
-      
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '20px' }}>
+
+      <div className={styleImagen.viewImagen}>
         {previewUrls.map((url, index) => (
           <div key={index} style={{ position: 'relative' }}>
-            <img 
-              src={url} 
-              alt={`Previsualización ${index + 1}`} 
-              style={{ 
-                width: '100px', 
+            <img
+              src={url}
+              alt={`Previsualización ${index + 1}`}
+              style={{
+                width: '100px',
                 height: '100px',
                 objectFit: 'cover',
-                borderRadius: '4px'
+                borderRadius: '4px',
               }}
             />
-            <button 
+            <button
               onClick={() => removeImage(index)}
               style={{
                 position: 'absolute',
@@ -92,14 +92,12 @@ export function MultiImageUploader({ selectedFiles, setSelectedFiles }) {
                 borderRadius: '50%',
                 width: '20px',
                 height: '20px',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
               ×
             </button>
-            <p style={{ fontSize: '12px', marginTop: '4px' }}>
-              {selectedFiles[index].name.slice(0, 15)}...
-            </p>
+            <p className={styleImagen.textImagen}>{selectedFiles[index].name.slice(0, 15)}...</p>
           </div>
         ))}
       </div>
