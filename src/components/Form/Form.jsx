@@ -1,7 +1,10 @@
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { MultiImageUploader } from '../util/MultiImageUploader';
 import { MultiLineInput } from '../util/MultiLineInput';
 import config from '../../config/config.env';
+import { useQuery } from '@tanstack/react-query';
+import styleForm from '../Form/Form.module.css';
+import peticionAxios from '../util/peticionAxios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 const CREATE_GUIDE_ENDPOINT = import.meta.env.VITE_CREACION_GUIA;
@@ -12,10 +15,40 @@ export default function Form({ onSubmit }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   // Usando las variables de entorno directamente
   const url = `${API_BASE_URL}${CREATE_GUIDE_ENDPOINT}`;
+  const [tags, setTags] = useState([]);
 
-  console.log('la url es ', config.api.url);
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const response = await peticionAxios({
+          url: `${config.api.url}/${config.api.obtener_tags}`,
+          tipoPeticion: 'GET',
+        });
+        console.log('la data de tags ', response);
+        setTags(response);
+      } catch (error) {
+        console.error('Error al traer tags:', error);
+      }
+    };
+
+    fetchTags();
+  }, []);
+
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  const handleTagChange = (e) => {
+    const options = e.target.options;
+    const values = [];
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected) {
+        values.push(options[i].value);
+      }
+    }
+    setSelectedTags(values);
+  };
 
   // Función para manejar el envío al backend
   const handleSubmit = async (e) => {
@@ -23,44 +56,31 @@ export default function Form({ onSubmit }) {
     setIsSubmitting(true);
 
     try {
-      // Crear FormData para enviar tanto la imagen como los pasos
       const formData = new FormData();
 
-      // Agregar múltiples imágenes
       selectedFiles.forEach((file) => {
-        formData.append('images', file); // Mejor usar el mismo nombre para todos
+        formData.append('images', file);
       });
 
-      //Agrega titulo
       formData.append('title', title);
-
-      // Agregar otros datos
+      formData.append('description', description);
       formData.append('steps', JSON.stringify(steps.filter((step) => step.content.trim() !== '')));
-
       formData.append(
         'equipments',
         JSON.stringify(equipment.filter((item) => item.name.trim() !== ''))
       );
+      formData.append('tags', JSON.stringify(selectedTags));
 
-      // Enviar al backend (ejemplo con fetch)
-      const response = await fetch(url, {
-        method: 'POST',
-        body: formData,
-        // No necesitas headers para 'Content-Type' con FormData,
-        // el navegador lo establecerá automáticamente con el boundary correcto
+      const result = await peticionAxios({
+        url,
+        tipoPeticion: 'POST',
+        data: formData,
       });
 
-      if (!response.ok) {
-        throw new Error('Error en la respuesta del servidor');
-      }
-
-      const result = await response.json();
+      console.log('Guía creada:', result);
       onSubmit(result);
-      console.log('Éxito:', result);
-      // Aquí puedes manejar la respuesta exitosa (redirección, mensaje, etc.)
     } catch (error) {
       console.error('Error al enviar:', error);
-      // Manejar el error (mostrar mensaje al usuario, etc.)
     } finally {
       setIsSubmitting(false);
     }
@@ -68,16 +88,27 @@ export default function Form({ onSubmit }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h3>Titulo</h3>
+      <h3 className={styleForm.title}>Titulo</h3>
       <input
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Titulo"
         required
+        className={styleForm.input}
       />
 
-      <h3>Pasos a seguir:</h3>
+      <h3 className={styleForm.title}>Descripcion</h3>
+      <input
+        type="text"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder="Descripcion"
+        required
+        className={styleForm.input}
+      />
+
+      <h3 className={styleForm.title}>Pasos a seguir:</h3>
       <MultiLineInput
         items={steps}
         setItems={setSteps}
@@ -86,7 +117,7 @@ export default function Form({ onSubmit }) {
         fieldName="content"
       />
 
-      <h3>Herramientas a usar:</h3>
+      <h3 className={styleForm.title}>Herramientas a usar:</h3>
       <MultiLineInput
         items={equipment}
         setItems={setEquipment}
@@ -95,10 +126,39 @@ export default function Form({ onSubmit }) {
         fieldName="name"
       />
 
-      <h3>Subir imagen:</h3>
+      <h3 className={styleForm.title}>Subir imagen:</h3>
       <MultiImageUploader selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} />
 
-      <button type="submit" disabled={isSubmitting} style={{ marginTop: '20px' }}>
+      {/* --- tags --- */}
+      <h3 className={styleForm.title}>Selecciona tags:</h3>
+
+      {tags && (
+        <div className={styleForm.tags}>
+          {tags.map((tag) => {
+            const isSelected = selectedTags.includes(tag.id_tag.toString());
+
+            return (
+              <button
+                key={tag.id_tag}
+                type="button" // importante, para que no dispare el submit
+                className={`${styleForm.tagButton} ${isSelected ? styleForm.selected : ''}`}
+                onClick={() => {
+                  setSelectedTags(
+                    (prev) =>
+                      prev.includes(tag.id_tag.toString())
+                        ? prev.filter((id) => id !== tag.id_tag.toString()) // si está, lo saco
+                        : [...prev, tag.id_tag.toString()] // si no está, lo agrego
+                  );
+                }}
+              >
+                {tag.content}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      <button type="submit" disabled={isSubmitting} className={styleForm.button}>
         {isSubmitting ? 'Enviando...' : 'Enviar datos'}
       </button>
     </form>

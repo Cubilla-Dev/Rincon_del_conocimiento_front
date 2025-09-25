@@ -1,0 +1,64 @@
+.containerPage {
+  display: flex;
+
+  margin: 0;   /* elimina margen por defecto del <ul> */
+  padding: 0;  /* elimina padding por defecto del <ul> */
+  list-style: none; /* elimina los puntitos del <ul> */
+}
+
+
+.guideCard {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none; /* Quita el subrayado del link */
+  color: white; /* Asegura contraste */
+  background-color: rgb(9, 160, 29);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 10px;
+  width: 250px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  align-items: center;
+}
+
+/* Hover para efecto visual */
+.guideCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+
+.containerTag {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  width: 250px;
+  border-radius: 10px;
+}
+
+.tag {
+  background-color:  #ff6b35;
+  
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.addForm {
+  display: flex;
+  text-decoration: none; /* Quita el subrayado del link */
+  color: white; /* Asegura contraste */
+  background-color: rgb(69, 112, 231);
+  border-radius: 50px;
+  padding: 5px;
+  width: 40px;
+  height: 40px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 10px;
+  right: 50px;
+}

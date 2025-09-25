@@ -1,0 +1,51 @@
+
+/* Header fijo arriba */
+.header {
+  position: fixed;          /* siempre visible arriba */
+  top: 0;
+  left: 0;
+  width: 100%;              /* ocupa todo el ancho */
+  height: 70px;             /* alto de la barra */
+  background-color: rgb(14, 179, 36);    /* mismo color que tu containerPrincipal */
+  display: flex;
+  align-items: center;
+  padding: 0 20px;          /* espacio lateral interno */
+  box-sizing: border-box;
+  z-index: 1000;            /* para que quede encima del contenido */
+}
+
+.title {
+  font-size: 30px;
+  text-decoration: none;
+  color: black;
+}
+
+/* Ajusta tu contenedor principal para no quedar tapado por el header */
+.nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.addForm {
+  display: flex;
+  text-decoration: none; /* Quita el subrayado del link */
+  color: white; /* Asegura contraste */
+  background-color: rgb(69, 112, 231);
+  border-radius: 50px;
+  padding: 5px;
+  width: 40px;
+  height: 40px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: -30px;
+  right: 50px;
+}
+
+.mainContent {
+  margin-top: 50px;
+}

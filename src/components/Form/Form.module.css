@@ -4,17 +4,18 @@
   align-items: center;
 }
 
-/* .imagenContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-} */
+.title {
+  color: black;
+  font-size: 20px;
+}
 
 .button {
   background-color: #2be463;
   border-color: #41c958;
   border-radius: 10%;
   width: 150px;
+  height: 30px;
+  margin-top: 15px;
 }
 
 .input {
@@ -23,4 +24,32 @@
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+  border: 3px solid black;
+  border-radius: 10px;
+  width: 400px;
+}
+
+.tagButton {
+  padding: 8px 12px;
+  border: 2px solid black;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tagButton:hover {
+  background: #41c958;
+}
+
+.selected {
+  background: #186b26;
+  color: white;
 }
